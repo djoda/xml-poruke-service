@@ -19,4 +19,13 @@ public class MessageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<HttpStatus> deleteUserMessages(@PathVariable Long id){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}/{id1}")
+    public ResponseEntity<HttpStatus> deleteConversation(@PathVariable Long id,@PathVariable Long id1){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
