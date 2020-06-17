@@ -1,17 +1,31 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.MessageDTO;
+import com.example.demo.security.TokenUtils;
+import com.example.demo.service.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/message")
 public class MessageController {
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<HttpStatus> getUserMessages(@PathVariable Long id){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    @GetMapping()
+    public ResponseEntity<List<MessageDTO>> getUserMessages(HttpServletRequest request){
+        String token = tokenUtils.getToken(request);
+        String username = tokenUtils.getUsernameFromToken(token);
+        return new ResponseEntity<>(messageService.getUserMessages(username),HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")
