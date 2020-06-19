@@ -28,18 +28,16 @@ public class MessageController {
         return new ResponseEntity<>(messageService.getUserMessages(username),HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping( value = "/reply",consumes = "application/json")
     public ResponseEntity<MessageDTO> addMessages(@RequestBody MessageDTO messageDTO){
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(messageService.addMessage(messageDTO),HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<HttpStatus> deleteUserMessages(@PathVariable Long id){
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "/{id}/{id1}")
-    public ResponseEntity<HttpStatus> deleteConversation(@PathVariable Long id,@PathVariable Long id1){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<MessageDTO> addMessages(@RequestBody MessageDTO messageDTO,HttpServletRequest request){
+        String token = tokenUtils.getToken(request);
+        String username = tokenUtils.getUsernameFromToken(token);
+        messageDTO.setSenderUsername(username);
+        return new ResponseEntity<>(messageService.addMessage(messageDTO),HttpStatus.OK);
     }
 }

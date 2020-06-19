@@ -15,7 +15,16 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    public void addMessage(MessageDTO messageDTO){}
+    public MessageDTO addMessage(MessageDTO messageDTO){
+        Message mess = new Message();
+        mess.setReceiverUsername(messageDTO.getReceiverUsername());
+        mess.setSenderUsername(messageDTO.getSenderUsername());
+        mess.setSubject(messageDTO.getSubject());
+        mess.setText(messageDTO.getText());
+        mess.setTimeSent(messageDTO.getTimeSent());
+        messageRepository.save(mess);
+        return messageDTO;
+    }
 
     public void checkRequestState(){}
 
