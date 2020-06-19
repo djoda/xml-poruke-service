@@ -28,16 +28,15 @@ public class MessageController {
         return new ResponseEntity<>(messageService.getUserMessages(username),HttpStatus.OK);
     }
 
-    @PostMapping( value = "/reply",consumes = "application/json")
-    public ResponseEntity<MessageDTO> addMessages(@RequestBody MessageDTO messageDTO){
-        return new ResponseEntity<>(messageService.addMessage(messageDTO),HttpStatus.OK);
-    }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<MessageDTO> addMessages(@RequestBody MessageDTO messageDTO,HttpServletRequest request){
+    public ResponseEntity<HttpStatus> addMessages(@RequestBody MessageDTO messageDTO,HttpServletRequest request){
         String token = tokenUtils.getToken(request);
         String username = tokenUtils.getUsernameFromToken(token);
         messageDTO.setSenderUsername(username);
-        return new ResponseEntity<>(messageService.addMessage(messageDTO),HttpStatus.OK);
+        if(messageService.addMessage(messageDTO,token))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

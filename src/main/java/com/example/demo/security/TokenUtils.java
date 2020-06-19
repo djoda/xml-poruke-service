@@ -130,6 +130,30 @@ public class TokenUtils {
         return audience;
     }
 
+    public String getRoleFromToken(String token) {
+        String role;
+        try {
+            final Claims claims = this.getAllClaimsFromToken(token);
+            role = (String) claims.get("role");
+            role = getRoleFromParsingArray(role);
+        } catch (Exception e) {
+            role = null;
+        }
+        return role;
+    }
+
+    private String getRoleFromParsingArray(String roles) {
+        String[] rls = roles.split("\\|");
+        String role = "";
+        for (int i=0; i< rls.length; i++) {
+            if (rls[i].contains("ROLE_")) {
+                role = rls[i];
+                break;
+            }
+        }
+        return role;
+    }
+
     public Date getExpirationDateFromToken(String token) {
         Date expiration;
         try {
