@@ -7,6 +7,10 @@ import com.example.demo.repository.MessageRepository;
 import com.example.demo.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -62,8 +66,9 @@ public class MessageService {
         Map<String, String> params = new HashMap<String, String>();
         params.put("customerUsername",customerUsername);
         params.put("agentUsername",agentUsername);
-        boolean result = restTemplate.getForObject(url, Boolean.class, params);
-        return  result;
+        HttpEntity header = createAuthHeader(token, null);
+        ResponseEntity<Boolean> result = restTemplate.exchange(url, HttpMethod.GET, header, Boolean.class, params);
+        return  result.getBody();
     }
 
     public List<MessageDTO> getUserMessages(String username){
@@ -74,5 +79,12 @@ public class MessageService {
             dtos.add(new MessageDTO(m));
         }
         return dtos;
+    }
+
+    public <T> HttpEntity<T> createAuthHeader(String token, T bodyType) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<T> request = new HttpEntity<>(bodyType, headers);
+        return request;
     }
 }
