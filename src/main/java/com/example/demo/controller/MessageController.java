@@ -22,6 +22,7 @@ public class MessageController {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @PreAuthorize("hasAuthority('CREATE_MESSAGE')")
     @GetMapping()
     public ResponseEntity<List<MessageDTO>> getUserMessages(HttpServletRequest request){
         String token = tokenUtils.getToken(request);
