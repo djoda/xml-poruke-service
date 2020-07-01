@@ -73,4 +73,8 @@ public class GetAllMessagesResponse {
         return this.messages;
     }
 
+    public void setMessages(List<Message> messages){
+        if(messages != null)
+            this.messages = messages;
+    }
 }
