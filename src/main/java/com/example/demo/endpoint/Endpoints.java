@@ -9,9 +9,11 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import rs.ac.uns.ftn.xws_tim2.Message;
-import rs.ac.uns.ftn.xws_tim2.SendMessageRequest;
-import rs.ac.uns.ftn.xws_tim2.SendMessageResponse;
+import rs.ac.uns.ftn.xws_tim2.*;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Endpoint
 public class Endpoints {
@@ -30,7 +32,7 @@ public class Endpoints {
         this.messageService = messageService;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "newAdvertisementRequest")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "sendMessageRequest")
     @ResponsePayload
     public SendMessageResponse sendMessage(@RequestPayload SendMessageRequest request) {
 
@@ -42,4 +44,20 @@ public class Endpoints {
         return response;
     }
 
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getAllMessagesRequest")
+    @ResponsePayload
+    public GetAllMessagesResponse getMessages(@RequestPayload GetAllMessagesRequest request) throws DatatypeConfigurationException {
+
+        List<com.example.demo.model.Message> userMessages = messageRepository.findAllByReceiverUsername(request.getUsername());
+        GetAllMessagesResponse response = new GetAllMessagesResponse();
+
+        List<Message> messages = new ArrayList<Message>();
+        for(com.example.demo.model.Message m : userMessages){
+            if(m != null){
+                messages.add(m.getGenerated());
+            }
+        }
+        response.setMessages(messages);
+        return response;
+    }
 }
